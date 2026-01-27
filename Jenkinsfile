@@ -76,7 +76,7 @@ pipeline {
                         docker load -i ${REMOTE_TAR_DIR}/${TAR_FILE}
 
                         # Apply Kubernetes deployment
-                        kubectl apply -f /home/rcv/daas_installer/daas_v2/k8s/backend-2-deployment.yaml -n thinkcloud
+                        kubectl apply -f /home/rcv/daas_installer/agent_backend/k8s/devraq-deployment.yaml -n thinkcloud
 ENDSSH
                 """
             }
