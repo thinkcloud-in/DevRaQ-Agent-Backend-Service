@@ -28,7 +28,7 @@ pipeline{
         stage('Deploy to k8s'){
             steps{
                 script{
-                    sh "kubectl apply -f k8s/backend-2-deployment.yaml -n ${KUBE_NAMESPACE}"
+                    sh "kubectl apply -f k8s/devraq-deployment.yaml -n ${KUBE_NAMESPACE}"
                 }
             }
         }
