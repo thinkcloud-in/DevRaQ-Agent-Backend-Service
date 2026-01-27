@@ -13,7 +13,7 @@ pipeline {
         REMOTE_USER    = "root"
         REMOTE_TAR_DIR = "/home/rcv/daas_installer/daas_tar"
         REMOTE_BASE_DIR = "/home/rcv/daas_installer/daas_v1/agent-backend"
-        SCRIPT_DIR     = "/home/rcv/Desktop/script"
+        SCRIPT_DIR     = "/home/rcv/Desktop/scrpit"
         DEPLOY_SCRIPT  = "agent_backend.sh"
         SSH_KEY        = "/root/.ssh/id_ed25519"
     }
@@ -80,13 +80,21 @@ pipeline {
         stage('Deploy Backend on Remote Server') {
             steps {
                 sh """
-                    # Make deployment script executable
-                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \
-                        "chmod +x ${SCRIPT_DIR}/${DEPLOY_SCRIPT}"
+                    echo "➡️ Deploying backend on remote server..."
 
-                    # Run the deployment script
-                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \
-                        "bash ${SCRIPT_DIR}/${DEPLOY_SCRIPT}"
+                    # Ensure the deployment script exists on remote server
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "test -f ${SCRIPT_DIR}/${DEPLOY_SCRIPT}" || \
+                        { echo '❌ Deployment script not found on remote host!'; exit 1; }
+
+                    # Run everything in a single SSH session
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} <<'ENDSSH'
+                        set -e
+                        echo "🔹 Making deployment script executable..."
+                        chmod +x ${SCRIPT_DIR}/${DEPLOY_SCRIPT}
+
+                        echo "🔹 Running deployment script..."
+                        bash ${SCRIPT_DIR}/${DEPLOY_SCRIPT}
+        ENDSSH
                 """
             }
         }
