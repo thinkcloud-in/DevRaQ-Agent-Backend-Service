@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devraq-agent-backend
+  namespace: thinkcloud
+  labels:
+    app: devraq-agent-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devraq-agent-backend
+  template:
+    metadata:
+      labels:
+        app: devraq-agent-backend
+    spec:
+      containers:
+        - name: devraq-agent-backend
+          image: devraq-agent-backend-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8002
+          env:
+            - name: INFLUXDB_URL
+              value: "http://172.16.0.103:8086"
+            - name: INFLUXDB_TOKEN
+              value: "3K0iKC2-0FhOaRFI_kQN-3tCAUYacTXpuiJ9Uts5pzH9ZkplCuc7xxhdj5A01dXxPEG7BLE58QJLpshIZIB03w=="
+            - name: INFLUXDB_ORG
+              value: "RCV-Vamanit-ORG"
