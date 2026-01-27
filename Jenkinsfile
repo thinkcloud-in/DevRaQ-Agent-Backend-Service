@@ -9,10 +9,11 @@ pipeline {
         TAR_DIR        = "/home/admin-01/Desktop/rcv/tar"
         TAR_FILE       = "devraq-agent-backend_latest.tar"
 
-        REMOTE_HOST    = "172.16.0.101"      // K8s VM
-        REMOTE_USER    = "root"              // User on K8s VM that can run kubectl
+        REMOTE_HOST    = "172.16.0.101"
+        REMOTE_USER    = "root"
         REMOTE_TAR_DIR = "/home/rcv/daas_installer/daas_tar"
-        SSH_KEY        = "/root/.ssh/id_ed25519" // Existing SSH key mounted in Jenkins
+        REMOTE_BASE_DIR = "/home/rcv/daas_installer/daas_v1/agent-backend"
+        SSH_KEY        = "/root/.ssh/id_ed25519"
     }
 
     stages {
@@ -54,30 +55,36 @@ pipeline {
             }
         }
 
-        stage('Copy TAR to Remote K8s VM') {
+        stage('Copy TAR & YAMLs to Remote Server') {
             steps {
-                sh '''
+                sh """
+                    # Create remote directories
                     ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no \
-                        ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_TAR_DIR}"
+                        ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_TAR_DIR} ${REMOTE_BASE_DIR}"
 
+                    # Copy TAR file
                     scp -i ${SSH_KEY} -o StrictHostKeyChecking=no \
                         ${TAR_DIR}/${TAR_FILE} \
                         ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TAR_DIR}/
-                '''
+
+                    # Copy Kubernetes YAML files (from repo) to BASE_DIR
+                    scp -i ${SSH_KEY} -o StrictHostKeyChecking=no \
+                        ${WORKDIR}/k8s/*.yaml \
+                        ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BASE_DIR}/
+                """
             }
         }
 
-        stage('Deploy Backend on Remote K8s VM') {
+        stage('Deploy Backend on Remote Server') {
             steps {
                 sh """
-                    echo "➡️ Loading Docker image and applying K8s deployment on remote VM..."
-                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} bash -s <<ENDSSH
-                        # Load Docker image
-                        docker load -i ${REMOTE_TAR_DIR}/${TAR_FILE}
+                    # Make deployment script executable
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \
+                        "chmod +x ${REMOTE_BASE_DIR}/backend.sh"
 
-                        # Apply Kubernetes deployment
-                        kubectl apply -f /home/rcv/daas_installer/agent_backend/k8s/devraq-deployment.yaml -n thinkcloud
-ENDSSH
+                    # Run the deployment script
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \
+                        "bash ${REMOTE_BASE_DIR}/backend.sh"
                 """
             }
         }
