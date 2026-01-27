@@ -1,46 +1,95 @@
-pipeline{
+pipeline {
     agent any
-    environment{
-        IMAGE = "devraq-agent-backend-service"
-        KUBE_NAMESPACE="thinkcloud"
 
-        INFLUXDB_URL="http://172.16.0.103:8086"
-        INFLUXDB_TOKEN="3K0iKC2-0FhOaRFI_kQN-3tCAUYacTXpuiJ9Uts5pzH9ZkplCuc7xxhdj5A01dXxPEG7BLE58QJLpshIZIB03w=="
-        INFLUXDB_ORG="RCV-Vamanit-ORG"
+    environment {
+        APP_NAME       = "devraq-agent-backend-service"
+        IMAGE_TAG      = "latest"
+
+        WORKDIR        = "/home/admin-01/Desktop/rcv/agent-backend"
+        TAR_DIR        = "/home/admin-01/Desktop/rcv/tar"
+        TAR_FILE       = "devraq-agent-backend_latest.tar"
+
+        REMOTE_HOST    = "172.16.0.101"      // K8s VM
+        REMOTE_USER    = "root"              // User on K8s VM that can run kubectl
+        REMOTE_TAR_DIR = "/home/rcv/daas_installer/daas_tar"
+        SSH_KEY        = "/root/.ssh/id_ed25519" // Existing SSH key mounted in Jenkins
     }
 
-    stages{
-        stage('checkout'){
-            steps{
-                git branch: 'main', url: 'https://github.com/thinkcloud-in/DevRaQ-Agent-Backend-Service.git'
+    stages {
+
+        stage('Prepare Directories') {
+            steps {
+                sh 'mkdir -p ${TAR_DIR}'
             }
         }
 
-        stage('build docker'){
-            steps{
-                script{
-                    sh "docker build -t ${IMAGE}:latest ."
-                    // sh "docker push ${IMAGE}:latest"
+        stage('Checkout Backend Code') {
+            steps {
+                dir("${WORKDIR}") {
+                    deleteDir()
+                    git branch: 'main',
+                        url: 'https://github.com/thinkcloud-in/DevRaQ-Agent-Backend-Service.git',
+                        credentialsId: 'github_token'
                 }
             }
         }
 
-        stage('Deploy to k8s'){
-            steps{
-                script{
-                    sh "kubectl apply -f k8s/devraq-deployment.yaml -n ${KUBE_NAMESPACE}"
+        stage('Build Docker Image') {
+            steps {
+                dir("${WORKDIR}") {
+                    sh '''
+                        docker image prune -a -f
+                        docker build -t ${APP_NAME}:${IMAGE_TAG} .
+                    '''
                 }
             }
         }
+
+        stage('Save Docker Image as TAR') {
+            steps {
+                sh '''
+                    docker save -o ${TAR_DIR}/${TAR_FILE} ${APP_NAME}:${IMAGE_TAG}
+                    ls -lh ${TAR_DIR}
+                '''
+            }
+        }
+
+        stage('Copy TAR to Remote K8s VM') {
+            steps {
+                sh '''
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no \
+                        ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_TAR_DIR}"
+
+                    scp -i ${SSH_KEY} -o StrictHostKeyChecking=no \
+                        ${TAR_DIR}/${TAR_FILE} \
+                        ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TAR_DIR}/
+                '''
+            }
+        }
+
+        stage('Deploy Backend on Remote K8s VM') {
+            steps {
+                sh """
+                    echo "➡️ Loading Docker image and applying K8s deployment on remote VM..."
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} bash -s <<ENDSSH
+                        # Load Docker image
+                        docker load -i ${REMOTE_TAR_DIR}/${TAR_FILE}
+
+                        # Apply Kubernetes deployment
+                        kubectl apply -f /home/rcv/daas_installer/daas_v2/k8s/backend-2-deployment.yaml -n thinkcloud
+ENDSSH
+                """
+            }
+        }
+
     }
 
-    post{
-        success{
-            echo "Agent Deployed successfully!"
+    post {
+        success {
+            echo '✅ Agent Backend Build → TAR → Copy → Deploy Successful!'
         }
-        failure{
-            echo "Agent Deployment failed. Please check the logs."
+        failure {
+            echo '❌ Agent Backend Pipeline Failed!'
         }
     }
 }
-
