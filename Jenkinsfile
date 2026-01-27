@@ -13,7 +13,7 @@ pipeline {
         REMOTE_USER    = "root"
         REMOTE_TAR_DIR = "/home/rcv/daas_installer/daas_tar"
         REMOTE_BASE_DIR = "/home/rcv/daas_installer/daas_v1/agent-backend"
-        SCRIPT_DIR     = "/home/rcv/Desktop/script/backend.sh"
+        SCRIPT_DIR     = "/home/rcv/Desktop/script"
         SSH_KEY        = "/root/.ssh/id_ed25519"
     }
 
