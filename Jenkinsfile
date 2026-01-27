@@ -13,6 +13,7 @@ pipeline {
         REMOTE_USER    = "root"
         REMOTE_TAR_DIR = "/home/rcv/daas_installer/daas_tar"
         REMOTE_BASE_DIR = "/home/rcv/daas_installer/daas_v1/agent-backend"
+        SCRIPT_DIR     = "/home/rcv/Desktop/script/backend.sh"
         SSH_KEY        = "/root/.ssh/id_ed25519"
     }
 
@@ -80,11 +81,11 @@ pipeline {
                 sh """
                     # Make deployment script executable
                     ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \
-                        "chmod +x ${REMOTE_BASE_DIR}/backend.sh"
+                        "chmod +x ${SCRIPT_DIR}/backend.sh" 
 
                     # Run the deployment script
                     ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \
-                        "bash ${REMOTE_BASE_DIR}/backend.sh"
+                        "bash ${SCRIPT_DIR}/backend.sh"
                 """
             }
         }
