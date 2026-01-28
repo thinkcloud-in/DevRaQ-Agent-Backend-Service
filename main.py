@@ -14,6 +14,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(influx_router, prefix="/api")
-app.include_router(kill_router, prefix="/api")
+app.include_router(influx_router, prefix="/agent")
+app.include_router(kill_router, prefix="/agent")
 
