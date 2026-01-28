@@ -23,8 +23,8 @@ spec:
             - containerPort: 8002
           env:
             - name: INFLUXDB_URL
-              value: "http://172.16.0.103:8086"
+              value: "https://influxdb.rcvdev.team"
             - name: INFLUXDB_TOKEN
-              value: "3K0iKC2-0FhOaRFI_kQN-3tCAUYacTXpuiJ9Uts5pzH9ZkplCuc7xxhdj5A01dXxPEG7BLE58QJLpshIZIB03w=="
+              value: "9c00d5b8def8d01d15034e9ad5157f306b8dd8e9056a020cb74ba47538a23f2e"
             - name: INFLUXDB_ORG
               value: "RCV-Vamanit-ORG"
