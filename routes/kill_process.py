@@ -6,9 +6,8 @@ router = APIRouter()
 
 @router.post("/TaskManager/kill_process")
 def kill_process_endpoint(req: KillRequest):
-    if req.IP:
-        agent_ip = req.IP
-        agent_port = 8100
+    agent_ip = req.IP
+    agent_port = 8002
 
     url = f"http://{agent_ip}:{agent_port}/kill"
     results = []
