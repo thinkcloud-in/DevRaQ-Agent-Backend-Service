@@ -12,7 +12,6 @@ def kill_process_endpoint(req: KillRequest):
     agent_port = 8100
 
     url = f"http://{agent_ip}:{agent_port}/kill"
-    print('---------------------------------------',url)
     results = []
     
     for pid in req.pids:
