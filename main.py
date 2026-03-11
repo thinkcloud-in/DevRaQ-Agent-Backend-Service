@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from routes.metrics_routes import router as influx_router
 from routes.kill_process import router as kill_router
+from routes.agent_test import router as test_router
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -16,4 +17,5 @@ app.add_middleware(
 
 app.include_router(influx_router, prefix="/agent")
 app.include_router(kill_router, prefix="/agent")
+app.include_router(test_router, prefix="/agent")
 
