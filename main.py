@@ -18,4 +18,3 @@ app.add_middleware(
 app.include_router(influx_router, prefix="/agent")
 app.include_router(kill_router, prefix="/agent")
 app.include_router(test_router, prefix="/agent")
-
