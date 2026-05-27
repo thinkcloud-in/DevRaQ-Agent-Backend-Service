@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: devraq-agent-backend
-          image: devraq-agent-backend-service:1.0.0
+          image: docker.io/library/devraq-agent-backend-service:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8002
