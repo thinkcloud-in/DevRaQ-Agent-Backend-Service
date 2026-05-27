@@ -3,11 +3,11 @@ pipeline {
 
     environment {
         APP_NAME       = "devraq-agent-backend-service"
-        IMAGE_TAG      = "latest"
+        IMAGE_TAG      = "1.0.0"
 
         WORKDIR        = "/home/admin-01/Desktop/rcv/agent-backend"
         TAR_DIR        = "/home/admin-01/Desktop/rcv/tar"
-        TAR_FILE       = "devraq-agent-backend_latest.tar"
+        TAR_FILE       = "devraq-agent-backend_${IMAGE_TAG}.tar"
 
         REMOTE_HOST    = "172.16.0.101"
         REMOTE_USER    = "root"
