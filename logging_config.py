@@ -20,14 +20,6 @@ file_handler = RotatingFileHandler(
     maxBytes=10 * 1024 * 1024,
     backupCount=5,
 )
-file_handler.setFormatter(formatter)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-
-# Root logger configuration
-logging.basicConfig(level=LOG_LEVEL, handlers=[file_handler, console_handler])
-
 # ContextVar for request ID
 request_id_var = contextvars.ContextVar("request_id", default="-")
 
@@ -36,4 +28,12 @@ class RequestIDFilter(logging.Filter):
         record.request_id = request_id_var.get()
         return True
 
-logging.getLogger().addFilter(RequestIDFilter())
+file_handler.setFormatter(formatter)
+file_handler.addFilter(RequestIDFilter())
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+console_handler.addFilter(RequestIDFilter())
+
+# Root logger configuration
+logging.basicConfig(level=LOG_LEVEL, handlers=[file_handler, console_handler])
