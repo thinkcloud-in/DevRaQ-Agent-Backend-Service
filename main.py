@@ -4,8 +4,12 @@ from routes.kill_process import router as kill_router
 from routes.agent_test import router as test_router
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+import logging_config
+from utils import request_id_middleware
 
 app = FastAPI()
+
+app.middleware("http")(request_id_middleware.add_request_id)
 
 app.add_middleware(
     CORSMiddleware,

@@ -63,9 +63,11 @@ async def kill_process_endpoint(req: KillRequest):
     agent_ip = req.IP or req.host
     agent_port = 8100
     url = f"http://{agent_ip}:{agent_port}/kill"
-    api_key = "myTopSecretKey321!" # Note: Still hardcoded as per instructions
+    api_key = "myTopSecretKey321!"
     
     logger.info(f"Received request to kill PIDs {req.pids} on agent {agent_ip}")
+    if not req.pids:
+        raise HTTPException(status_code=400, detail="No PIDs provided")
     
     async with httpx.AsyncClient() as client:
         tasks = [kill_single_pid(client, url, pid, api_key) for pid in req.pids]

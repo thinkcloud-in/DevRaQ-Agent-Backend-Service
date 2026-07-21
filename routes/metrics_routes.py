@@ -85,24 +85,28 @@ def fetch_background_processes(
 ):
     if os_type.lower() == "windows":
         measurement = "win_process"
+        group_columns = ["host", "instance"]
         fields_to_keep = [
             "_time", "ID_Process", "Percent_Processor_Time", "Private_Bytes",
             "Thread_Count", "Virtual_Bytes", "Working_Set", "host", "instance", "objectname", "source"
         ]
     else:
         measurement = "procstat"
+        group_columns = ["host", "pid"]
         fields_to_keep = [
             "_time", "process_name", "cpu_usage", "memory_usage", "user", "pid", "host"
         ]
     keep_clause = f'|> keep(columns: ["' + '", "'.join(fields_to_keep) + '"] )'
+    group_clause = f'|> group(columns: ["' + '", "'.join(group_columns) + '"])'
 
     flux_query = f'''
         from(bucket: "{bucket}")
         |> range(start: {range_start})
         |> filter(fn: (r) => r._measurement == "{measurement}"{f' and r.host == "{host}"' if host else ''})
-        |> sort(columns: ["_time"], desc: true)
-        |> first()
         |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+        {group_clause}
+        |> sort(columns: ["_time"], desc: true)
+        |> limit(n: 1)
         {keep_clause}
     '''
     data = fetch_data_from_bucket(bucket, flux_query)

@@ -1,0 +1,25 @@
+2026-07-21 14:42:33 | INFO     | routes.kill_process | 19d7f9a1-2e0e-44d7-87bc-63894b8fd979 | Received request to kill PIDs [10444] on agent 172.16.4.36
+2026-07-21 14:42:33 | INFO     | routes.kill_process | 19d7f9a1-2e0e-44d7-87bc-63894b8fd979 | Sending kill request for PID 10444 to http://172.16.4.36:8100/kill
+2026-07-21 14:42:35 | ERROR    | routes.kill_process | 19d7f9a1-2e0e-44d7-87bc-63894b8fd979 | Connection error to agent at http://172.16.4.36:8100/kill for PID 10444
+2026-07-21 14:42:35 | INFO     | routes.kill_process | 19d7f9a1-2e0e-44d7-87bc-63894b8fd979 | Completed kill process request for 1 PIDs with overall status 502
+2026-07-21 14:42:44 | INFO     | routes.kill_process | f9ac3a87-602e-443c-adfe-75f1577f4b84 | Received request to kill PIDs [10444] on agent 172.16.4.36
+2026-07-21 14:42:45 | INFO     | routes.kill_process | f9ac3a87-602e-443c-adfe-75f1577f4b84 | Sending kill request for PID 10444 to http://172.16.4.36:8100/kill
+2026-07-21 14:42:47 | ERROR    | routes.kill_process | f9ac3a87-602e-443c-adfe-75f1577f4b84 | Connection error to agent at http://172.16.4.36:8100/kill for PID 10444
+2026-07-21 14:42:47 | INFO     | routes.kill_process | f9ac3a87-602e-443c-adfe-75f1577f4b84 | Completed kill process request for 1 PIDs with overall status 502
+2026-07-21 15:04:11 | INFO     | routes.kill_process | a83ef894-d232-4fd5-9305-3d0ed6400948 | Received request to kill PIDs [10444] on agent 172.16.4.36
+2026-07-21 15:04:12 | INFO     | routes.kill_process | a83ef894-d232-4fd5-9305-3d0ed6400948 | Sending kill request for PID 10444 to http://172.16.4.36:8100/kill
+2026-07-21 15:04:14 | ERROR    | routes.kill_process | a83ef894-d232-4fd5-9305-3d0ed6400948 | Connection error to agent at http://172.16.4.36:8100/kill for PID 10444
+2026-07-21 15:04:14 | INFO     | routes.kill_process | a83ef894-d232-4fd5-9305-3d0ed6400948 | Completed kill process request for 1 PIDs with overall status 502
+2026-07-21 15:19:02 | INFO     | routes.kill_process | aedf53cb-b6ae-4018-b57c-3d84785f68cb | Received request to kill PIDs [10444] on agent 172.16.4.36
+2026-07-21 15:19:02 | INFO     | routes.kill_process | aedf53cb-b6ae-4018-b57c-3d84785f68cb | Sending kill request for PID 10444 to http://172.16.4.36:8100/kill
+2026-07-21 15:19:02 | INFO     | httpx | aedf53cb-b6ae-4018-b57c-3d84785f68cb | HTTP Request: POST http://172.16.4.36:8100/kill "HTTP/1.1 200 OK"
+2026-07-21 15:19:02 | INFO     | routes.kill_process | aedf53cb-b6ae-4018-b57c-3d84785f68cb | Completed kill process request for 1 PIDs with overall status 200
+2026-07-21 15:20:10 | INFO     | routes.kill_process | b8b7f5a8-0ed9-4761-b4ed-2e15ce05e933 | Received request to kill PIDs [10444] on agent 172.16.4.36
+2026-07-21 15:20:10 | INFO     | routes.kill_process | b8b7f5a8-0ed9-4761-b4ed-2e15ce05e933 | Sending kill request for PID 10444 to http://172.16.4.36:8100/kill
+2026-07-21 15:20:10 | INFO     | httpx | b8b7f5a8-0ed9-4761-b4ed-2e15ce05e933 | HTTP Request: POST http://172.16.4.36:8100/kill "HTTP/1.1 404 Not Found"
+2026-07-21 15:20:10 | ERROR    | routes.kill_process | b8b7f5a8-0ed9-4761-b4ed-2e15ce05e933 | Agent failed to kill PID 10444. Status: 404, Body: {'detail': 'Process 10444 not found or cannot be killed'}
+2026-07-21 15:20:10 | INFO     | routes.kill_process | b8b7f5a8-0ed9-4761-b4ed-2e15ce05e933 | Completed kill process request for 1 PIDs with overall status 404
+2026-07-21 15:20:39 | INFO     | routes.kill_process | fc3c5f90-11da-4d3d-bf7f-1c5ee1941ccc | Received request to kill PIDs [5276] on agent 172.16.4.36
+2026-07-21 15:20:40 | INFO     | routes.kill_process | fc3c5f90-11da-4d3d-bf7f-1c5ee1941ccc | Sending kill request for PID 5276 to http://172.16.4.36:8100/kill
+2026-07-21 15:20:40 | INFO     | httpx | fc3c5f90-11da-4d3d-bf7f-1c5ee1941ccc | HTTP Request: POST http://172.16.4.36:8100/kill "HTTP/1.1 200 OK"
+2026-07-21 15:20:40 | INFO     | routes.kill_process | fc3c5f90-11da-4d3d-bf7f-1c5ee1941ccc | Completed kill process request for 1 PIDs with overall status 200

@@ -1,8 +1,8 @@
 import os
 from influxdb_client import InfluxDBClient
-from utils.env_loader import load_env
+from dotenv import load_dotenv
 
-load_env()
+load_dotenv()
 
 INFLUXDB_URL = os.getenv("INFLUXDB_URL", "http://devraq.rcvdev.team/influxdb/")
 INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "9c00d5b8def8d01d15034e9ad5157f306b8dd8e9056a020cb74ba47538a23f2e")
